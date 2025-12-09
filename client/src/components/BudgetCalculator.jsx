@@ -17,10 +17,19 @@ export default function BudgetCalculator() {
   const [monthlyIncome, setMonthlyIncome] = useState('');
   const [accounts, setAccounts] = useState(defaultAccounts);
   const [budget, setBudget] = useState(null);
+  const [darkMode, setDarkMode] = useState(false);
+
+  useEffect(() => {
+    if (darkMode) {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+  }, [darkMode]);
 
   const calculateBudget = async () => {
     if (!monthlyIncome) return;
-    
+
     try {
       const response = await fetch('http://localhost:5000/api/budget', {
         method: 'POST',
@@ -43,9 +52,13 @@ export default function BudgetCalculator() {
   const totalPercentage = accounts.reduce((sum, acc) => sum + acc.percentage, 0);
 
   return (
-    <div className="budget-calculator">
-      <h1>Money Management App</h1>
-      
+    <>
+      <button className="theme-toggle" onClick={() => setDarkMode(!darkMode)}>
+        {darkMode ? '☀️ Light' : '🌙 Dark'}
+      </button>
+      <div className="budget-calculator">
+        <h1>Money Management App</h1>
+
       <div className="income-input">
         <label>Monthly Income: $</label>
         <input
@@ -94,6 +107,7 @@ export default function BudgetCalculator() {
           ))}
         </div>
       )}
-    </div>
+      </div>
+    </>
   );
 }
